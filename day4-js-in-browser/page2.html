@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <h1>Page 2</h1>
+    <div id="tablearea"></div>
+
+    <script>
+        var tar=document.getElementById("tablearea");
+
+        var blDiv = document.createElement('div');
+        newDiv.style.backgroundColor = '#000000';
+        newDiv.innerHTML = '00';
+
+        tar.appendChild(blDiv);
+
+        var wtDiv = document.createElement('div');
+        newDiv.style.backgroundColor = '#ffffff';
+        newDiv.innerHTML = '00';
+
+        tar.appendChild(blDiv);
+        tar.appendChild(wtDiv);
+
+        for(var i=0; i<10; i++){
+            for(var j=0; j<10; i++){
+                tar.appendChild(blDiv);
+                tar.appendChild(wtDiv);
+            }
+        }
+
+    </script>
+</body>
+</html>

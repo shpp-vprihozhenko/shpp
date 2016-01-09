@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .black{
+            color: black;
+            background: black;
+        }
+        .white{
+            color: white;
+            background: white;
+        }
+    </style>
+</head>
+<body>
+    <h1>3D mode!</h1>
+    <p id="msg">Hello!</p>
+    <script>
+        var s="";
+        for(var i=0; i<100; i++){
+            for(var j=0;j<100;j++){
+                if(i%2==0) s+="<span class='black'>00</span><span class='white'>00</span>";
+                else s+="<span class='white'>00</span><span class='black'>00</span>";
+            }
+            s+="<br>";
+        }
+        document.getElementById("msg").innerHTML=s;
+    </script>
+</body>
+</html>

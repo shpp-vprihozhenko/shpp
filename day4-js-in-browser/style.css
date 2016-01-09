@@ -1,0 +1,79 @@
+.delComplBtn {
+    padding: 3px;
+    float: right;
+    border: 1px solid;
+    border-radius: 3px;
+    color: black;
+    margin-top: 3px;
+}
+.delComplBtn:hover {
+    border-color: rgba(175, 47, 47, 0.1);
+    background-color: rgba(175, 47, 47, 0.1);
+}
+
+.filters {
+    margin: 0;
+    padding: 10px;
+    list-style: none;
+    right: 0;
+    left: 0;
+}
+.filters li {
+    display: inline;
+}
+.filters li a {
+    color: inherit;
+    margin: 3px;
+    padding: 3px 7px;
+    border: 1px solid;
+    border-radius: 3px;
+}
+.filters li a.selected,
+.filters li a:hover {
+    border-color: rgba(175, 47, 47, 0.1);
+    background-color: rgba(175, 47, 47, 0.1);
+}
+.filters li a.selected {
+    border-color: rgba(175, 47, 47, 0.2);
+}
+.topBlock{
+    font-size: 120%;
+    cursor: pointer;
+}
+#new_todo{
+    width: 300px;
+}
+.do{
+    float: left;
+    display: block;
+    width: 380px;
+    font-size: 120%;
+    cursor: pointer;
+}
+.do:hover{
+    background-color: aquamarine;
+}
+.btnLeft{
+    float: left;
+    padding: 5px;
+    cursor: pointer;
+}
+.btnRemove{
+    float: right;
+    cursor: pointer;
+}
+#chkBoxesToDo{
+    width: 440px;
+}
+.clearfix {
+    clear: both;
+}
+.totals{
+    padding: 5px;
+    font-size: 120%;
+}
+body{
+    width: 960px;
+    margin-right: auto;
+    margin-left: auto;
+}

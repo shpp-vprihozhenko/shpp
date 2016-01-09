@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+</head>
+<body>
+    <h1> To do list </h1><br>
+
+    <div class="topBlock">
+        <img src="img/chk.png" onclick="selectAllDo()" width="22" height="22">
+        <label for="new_todo">Enter new do: </label>
+        <input type="text" id="new_todo" name="new_todo" onkeyup="newToDo(event);" autofocus><br><br>
+    </div>
+
+    <div id="chkBoxesToDo"></div>
+
+    <div id="totalsAnchor"></div>
+
+    <div style="width: 440px">
+        <ul class="filters" style="float: left">
+            <li> <a href="#/" onclick='filterMode(0)' id="btn_filterAll">All</a> </li>
+            <li> <a href="#/" onclick='filterMode(1)' id="btn_filterActive">Active</a> </li>
+            <li> <a href="#/" onclick='filterMode(2)' id="btn_filterCompleted">Completed</a> </li>
+        </ul>
+
+        <a href="#/" onclick='deleteCompleted()' class="delComplBtn">Delete completed</a>
+    </div>
+
+    <script>
+        var listToDo=[];
+        var listToDoState=[];
+        var filterState=0;
+
+        window.onload=function(){
+            listToDo = JSON.parse(localStorage["listToDo"]);
+            listToDoState = JSON.parse(localStorage["listToDoState"]);
+            updateListToDoOnScreen();
+        }
+
+        function deleteCompleted(){
+            for(var i=0;i<listToDoState.length;i++){
+                if(listToDoState[i]){
+                    listToDoState.splice(i,1);
+                    listToDo.splice(i,1);
+                    i--;
+                }
+            }
+            updateListToDoOnScreen();
+        }
+
+        function selectAllDo(){
+            for(var i=0;i<listToDoState.length;i++)
+                listToDoState[i]=true;
+            updateListToDoOnScreen();
+        }
+
+        function filterMode(arg){
+            function changeCurrentButtonStyle(state) {
+
+                var btn_name;
+                if(filterState==0) btn_name="btn_filterAll";
+                else if(filterState==1) btn_name="btn_filterActive";
+                else btn_name="btn_filterCompleted";
+
+                var btn=document.getElementById(btn_name);
+
+                if(state=="pressed")
+                    btn.setAttribute("style","background-color: #d0d0d0");
+                else
+                    btn.setAttribute("style","background-color: #fff");
+            }
+
+            changeCurrentButtonStyle("unpressed");
+            filterState=arg;
+            updateListToDoOnScreen();
+            changeCurrentButtonStyle("pressed");
+
+        }
+
+        function updateListToDoOnScreen() {
+
+            function createNewChkBox(id){
+                var numInList=parseInt(id.substr(4));
+
+                var main_div = document.createElement('div');
+                parentChkBox.appendChild(main_div);
+
+                var chkBox = document.createElement("div");
+                var chkFname="chk_empty.png";
+                if(listToDoState[numInList]) chkFname="chk.png";
+                chkBox.innerHTML = "<img src='img/"+chkFname+"' width='16' height='16' class='btnLeft' onclick='changeState("+id+")'>";
+                main_div.appendChild(chkBox);
+
+                var node = document.createElement('div');
+                var s=listToDo[numInList];
+                if(listToDoState[numInList]) s="<del>"+s+"</del>";
+                node.innerHTML='<div class="do" id="'+id+'" ondblclick="editDo('+id+')">'+s+'</div>';
+                main_div.appendChild(node);
+
+//                var btnRemove = document.createElement("input");
+//                btnRemove.type = "button";
+//                btnRemove.value = "X";
+//                //btnRemove.innerHTML = "<img src='img/delete.png' width='16' height='16' class='btnRemove' onclick='delDo("+id+")'>";
+//                btnRemove.style.backgroundImage = "url('img/delete.png') no-repeat";
+//                btnRemove.onclick=function(){delDo(id);}
+
+                var btnRemove = document.createElement("div");
+                btnRemove.innerHTML = "<img src='img/delete.png' width='16' height='16' class='btnRemove' onclick='delDo("+id+")'>";
+                main_div.appendChild(btnRemove);
+
+                var node = document.createElement('div');
+                node.innerHTML = '<div class="clearfix"></div>';
+                parentChkBox.appendChild(node);
+            }
+
+            var parentChkBox=document.getElementById("chkBoxesToDo");
+            parentChkBox.innerHTML = "";
+
+            for(var i=0; i<listToDo.length; i++) {
+                if(filterState==1){
+                    if(listToDoState[i]){
+                        continue;}}
+                if(filterState==2){
+                    if(!listToDoState[i]){
+                        continue;}}
+                var curId = "idDo" + i;
+                createNewChkBox(curId);
+            }
+
+            var totalsAnchor=document.getElementById("totalsAnchor");
+            totalsAnchor.innerHTML="";
+            var node = document.createElement('div');
+            node.innerHTML='<div class="totals"> Total items: '+listToDo.length+'</div>';
+            totalsAnchor.appendChild(node);
+
+            localStorage["listToDo"] = JSON.stringify(listToDo);
+            localStorage["listToDoState"] = JSON.stringify(listToDoState);
+
+        }
+
+        function finishEdition(idx){
+            var ev=event;
+            if(ev.which == 27){updateListToDoOnScreen(); return false};
+            if(ev.which != 13){return true};
+            listToDo[idx]=document.getElementById("tmpInp").value;
+            //var element = document.getElementById("tmpInp");
+            //element.parentNode.removeChild(element);
+            updateListToDoOnScreen();
+        }
+
+        function editDo(elem){
+            var a=""+elem.id;
+            var idx=parseInt(a.substr(4));
+            var parentElem=document.getElementById(a);
+
+//            var input = document.createElement("input");
+//            input.type = "text";
+//            input.className = "do";
+//            input.id="tmpInp";
+//            input.value=listToDo[idx];
+//            input.onkeyup=function(){ finishEdition(event); };
+//            input.onfocusout=function(){ updateListToDoOnScreen(); };
+
+            var input = document.createElement('div');
+            input.innerHTML='<input type="text" class="do" id="tmpInp" value="'+listToDo[idx]+'" onkeyup="finishEdition('+idx+
+                            ')" onfocusout="updateListToDoOnScreen()">';
+
+            parentElem.parentNode.replaceChild(input,parentElem);
+
+            var newElem=document.getElementById("tmpInp");
+            //newElem.addEventListener("blur", breakEdition, false);
+            newElem.focus();
+        }
+
+        function delDo(elem){
+            var a=""+elem.id;
+            var idx=parseInt(a.substr(4));
+            listToDo.splice(idx,1);
+            listToDoState.splice(idx,1);
+            updateListToDoOnScreen();
+        }
+
+        function changeState(elem){
+            var a=""+elem.id;
+            var idx=parseInt(a.substr(4));
+            listToDoState[idx]=!listToDoState[idx];
+            updateListToDoOnScreen();
+        }
+
+        function newToDo(ev){
+            if(ev.which != 13){return true};
+            var newDo=document.getElementById("new_todo").value;
+            listToDo.push(newDo);
+            listToDoState.push(false);
+            updateListToDoOnScreen();
+            document.getElementById("new_todo").value="";
+        }
+
+    </script>
+</body>
+</html>
+

@@ -1,0 +1,94 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Chessboard</title>
+        <meta charset='utf-8' />
+		<style>
+			h1{
+				background-color: aqua;
+			}
+			body{
+				width:960px;
+				margin:0 auto;
+				text-align: center;
+			}
+		</style>
+	</head>
+
+	<body>
+	<br><br>
+	<input type="button" value="Go to my string chessboard" onclick="location.href='p3.html'">
+	<input type="button" value="Go to my Todo List" onclick="location.href='todolist.html'">
+	<h1 id="msg" onclick="startChessboard();">Press here to draw chessboard</h1><br>
+	<canvas height='400' width='400' id='myCanvas'></canvas>
+	<div id="myDiv">place for stop button</div>
+
+	<script>
+		var chessboardVisible;
+		var blinkingObj;
+
+		function stopBlinking(){
+			clearInterval(blinkingObj);
+			drawChessBoard();
+		}
+
+		function appendBtn() {
+			var btndiv = document.createElement("div");
+
+			btndiv.id = 'divBtn';
+			document.getElementById("myDiv").appendChild(btndiv);
+
+			var btn = document.createElement('button');
+			btn.type = 'button';
+			btn.value = 'OK';
+			btn.innerHTML = 'click me';
+			btn.onclick = function(){ stopBlinking(); };
+			btndiv.appendChild(btn); //document.body.appendChild(btn);
+		}
+
+		function startChessboard(){
+			drawChessBoard(); chessboardVisible=true;
+			blinkingObj=setInterval(function(){blinkChessboard()},1000);
+			document.getElementById("msg").innerHTML="Here is Chessboard!";
+			appendBtn();
+		}
+
+		function blinkChessboard(){
+			if(chessboardVisible){
+				hideChessboard();
+			} else {
+				drawChessBoard();
+			}
+			chessboardVisible=!chessboardVisible;
+		}
+
+		function drawChessBoard(){
+			var cellSize=50;
+			var canv = document.getElementById("myCanvas");
+			var ctx = canv.getContext('2d');
+			ctx.fillStyle="#000000";
+			ctx.strokeRect(0,0,canv.width,canv.height);
+			var cellsPerRow = canv.width/cellSize;
+			var cellCounter=0;
+			for(var i=0;i<cellsPerRow;i++){
+				cellCounter++;
+				for(var j=0;j<cellsPerRow;j++){
+					cellCounter++;
+					if(cellCounter%2==0) continue;
+					var x=j*cellSize;
+					var y=i*cellSize;
+					ctx.fillRect(x, y, cellSize, cellSize);
+				}
+			}
+		}
+
+		function hideChessboard(){
+			var canv = document.getElementById("myCanvas");
+			var ctx = canv.getContext('2d');
+			ctx.fillStyle="#ffffff";
+			ctx.fillRect(0,0,canv.width,canv.height);
+		}
+	</script>
+
+	</body>
+</html>

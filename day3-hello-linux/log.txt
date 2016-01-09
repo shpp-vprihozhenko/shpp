@@ -1,0 +1,5 @@
+Server start at 1:5:12
+Incoming request to server at 1:5:59
+Received message: hello world! 0123456789 at 1:5:59
+Answer message sent: hello world! 0123456789 at 1:5:59
+Request done at 1:5:59
