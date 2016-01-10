@@ -5,6 +5,7 @@
     <script type="text/javascript">
 
         var USER_ID=""+Math.random();
+        var flagTypingSent=false;
 
         function onNewuser() {
             $.ajax({
@@ -29,12 +30,16 @@
             var msgArr = $(this).serializeArray();
             var message = {
                 nickname : msgArr[0].value,
-                text : msgArr[1].value
+                text : msgArr[1].value,
+                userID : USER_ID
             };
             $.post('/send', message, function (data){$('#text').val('').focus();}, 'json');
+            addMsg(">",message.text);
+            flagTypingSent=false;
         }
 
         function addMsg(from, msg) {
+            if (from == $("#nickname").val()) return;
             $('<p><b>'+from+':</b> <span>'+msg+'</span></p>').hide().prependTo('#messages').slideDown();
         }
 
@@ -45,17 +50,18 @@
                 } else {
                     for (var i = 0; i < data.messages.length; i++) {
                         var message = data.messages[i];
-                        addMsg(message.nickname,message.text);
+                        if(message.text!="")
+                            addMsg(message.nickname,message.text);
                     }
                 }
             }
 
-            var un={};
-            un.userNickName = document.getElementById("nickname").value;
-            un.userID=USER_ID;
+            var msg_data={};
+            msg_data.userNickName = document.getElementById("nickname").value;
+            msg_data.userID=USER_ID;
 
             $.ajax({
-                data: un,
+                data: msg_data,
                 cache: false,
                 type: "GET",
                 url: "/recv",
@@ -66,15 +72,27 @@
                 }
             });
         }
+
+        function informServerAboutTyping(){
+            if (flagTypingSent) return;
+            var message = {
+                nickname : $("#nickname").val(),
+                text : " is typing ",
+                userID : USER_ID
+            };
+            $.post('/send', message, function (data){}, 'json');
+            flagTypingSent=true;
+        }
     </script>
 </head>
 <body>
 <h1>AJAX Chat</h1>
 <form action="/send" method="post" id="send">
     <label for="nickname">Nickname:</label> <input name="nickname" size="10" id="nickname" />
-    <label for="text">Message:</label> <input name="text" size="40" id="text" />
+    <label for="text">Message:</label> <input name="text" size="40" id="text" onkeypress="informServerAboutTyping();"/>
     <input type="submit">
 </form>
+<div>Help: to ask server "Who is online?" write "who is online?" and press Enter. Private msg begin from "to:"+nick</div>
 <div id="messages"></div>
 </body>
 </html>
