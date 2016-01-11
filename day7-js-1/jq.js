@@ -1,4 +1,10 @@
 function $(id){
-    var res=document.getElementById(id).innerHTML;
-    return res;
+    if(this===window) return new $(id);
+    this.elem = document.getElementById(id);
+    this.html = function (textToAdd){
+        if(textToAdd)
+            this.elem.innerHTML=this.elem.innerHTML+textToAdd;
+        return this.elem.innerHTML;
+    };
+    return this;
 }

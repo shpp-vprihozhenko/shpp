@@ -10,8 +10,9 @@
 <div id="id2">This is testing msg</div>
 <script>
     window.onload=function(){
-        var arIH=$("id1");
-        console.log(arIH);
+        console.log($("id1").html());
+        $("id2").html(" + Bla-bla");
+        console.log($("id2").html());
     }
 </script>
 </body>
