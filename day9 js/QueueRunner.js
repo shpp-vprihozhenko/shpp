@@ -54,8 +54,8 @@ QueueRunner.prototype.resume=function(){
     this.paused=false;
 };
 QueueRunner.prototype.cleanup=function(){
-    //this.arData.splice(0,this.arData.length);
-    //this.arFinishFunc.splice(0,this.arFinishFunc.length);
+    this.arData.splice(0,this.arData.length);
+    this.arFinishFunc.splice(0,this.arFinishFunc.length);
     clearInterval(this.refreshIntervalId);
 };
 

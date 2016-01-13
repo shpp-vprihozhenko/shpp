@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Working page</title>
+    <style>
+        .workingForm{
+            width: 50%;
+            height: 10em;
+            margin-top: 10%;
+            margin-right: auto;
+            margin-left: auto;
+            background: dimgray;
+            color: white;
+            text-align: center;
+            display:block;
+            padding: 3em;
+            border-radius: 1em;
+        }
+        .workingForm form label{
+            font-size: 120%;
+            padding: 0.5em;
+            background-color: #222222;
+            border-radius: 1em;
+        }
+        #dataBlock{
+            margin-top: 1em;
+        }
+        #dataBlock input{
+            margin-top: 0.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="workingForm">
+        <form name="form">
+            <label for="dataBlock">Enter you data</label>
+            <div id="dataBlock">
+                <input type="text" id="name" placeholder="name" size="35"/><br>
+                <input type="text" id="soname" placeholder="soname" size="35"/><br>
+                <input type="number" id="age" placeholder="your age" size="3"/><br><br>
+                <input type="submit" value="Submit">
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    var ws;
+    onload=function(){
+        ws=new WebSocket("ws://localhost:6614");
+        ws.onmessage=function(event){
+            console.log(event.data);
+        }
+    };
+    document.forms.form.onsubmit=function(){
+        var name=document.getElementById("name").value;
+        var soname=document.getElementById("soname").value;
+        var age=document.getElementById("age").value;
+        ws.send(JSON.stringify({"name":name, "soname":soname, "age":age}));
+        return false;
+    }
+</script>
+</html>
