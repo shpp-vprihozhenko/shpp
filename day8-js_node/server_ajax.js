@@ -12,9 +12,15 @@ app.get('/test1', function(req, res){
     res.header("Access-Control-Allow-Headers", "X-Requested-With");
     res.header("Access-Control-Allow-Headers", "Content-Type");
     res.header("Access-Control-Allow-Methods", "PUT, GET, POST, DELETE, OPTIONS");
-    var data=JSON.parse(req.query.data);
-    console.log(data);
-    res.status(200).json('Hello, '+data.name);
+    var name="Somebody"
+    try{
+        var data=JSON.parse(req.query.data);
+        console.log(data);
+        name=data.name;
+    } catch (e){ console.log("err",e); }
+    res.status(200).json('Hello, '+name);
 });
+
+app.use('/files', express.static(__dirname));
 
 app.listen(3000);
