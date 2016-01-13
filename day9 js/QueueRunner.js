@@ -13,52 +13,58 @@ function someAsyncFunction(data, onfinish){
     });
 }
 
-function checkRunnerQueue(obj){
-    if(obj.paused) return;
-    if(obj.arData.length>0){
-        if(obj.currentProcessFinished){
-            obj.currentProcessFinished=false;
-            obj.initFunc(obj.arData.shift(),obj.arFinishFunc.shift());
-        }
-    }
-}
-
 function QueueRunner(initFunc){
     this.initFunc=initFunc;
     this.arData=[];
     this.arFinishFunc=[];
     this.currentProcessFinished=true;
     this.paused=false;
-    this.refreshIntervalId=setInterval(function(obj){checkRunnerQueue(obj)}, 1000, this);
     return this;
 }
 
 function formFinFunc(obj,data) {
     var obj2=obj;
     var f=function(status){
+        console.log("Task is finished!");
         data.onFinish(status);
         obj2.currentProcessFinished=true;
+        obj2.launchNextTaskIfPossible();
     };
     return f;
 }
 
+QueueRunner.prototype.launchNextTaskIfPossible=function(){
+    if(this.paused) {return; console.log("runner paused");}
+    if(this.arData.length>0){
+        if(this.currentProcessFinished){
+            console.log("runner will launch next task");
+            this.currentProcessFinished=false;
+            this.initFunc(this.arData.shift(),this.arFinishFunc.shift());
+        } else {
+            console.log("runner is busy");
+        }
+    } else {
+        console.log("No tasks to run.");
+    }
+};
 QueueRunner.prototype.push=function(data){
     this.arData.push(data.data);
     var fn=formFinFunc(this,data);
     this.arFinishFunc.push(fn);
+    console.log("New task pushed to queue.");
+    this.launchNextTaskIfPossible();
 };
 QueueRunner.prototype.pause=function(){
     this.paused=true;
 };
 QueueRunner.prototype.resume=function(){
     this.paused=false;
+    this.launchNextTaskIfPossible();
 };
 QueueRunner.prototype.cleanup=function(){
     this.arData.splice(0,this.arData.length);
     this.arFinishFunc.splice(0,this.arFinishFunc.length);
-    clearInterval(this.refreshIntervalId);
 };
-
 
 qr = new QueueRunner(function exec(data, onfinish){
     someAsyncFunction(data, onfinish); //<== onfinish will be called here
@@ -96,4 +102,4 @@ qr.push({
 qr.resume();
 
 // do not process pending items, run their onFinish callbacks with "CANCELLED" error
-//qr.cleanup();
+qr.cleanup();
