@@ -23,11 +23,11 @@ function QueueRunner(initFunc){
 }
 
 function formFinFunc(obj,data) {
-    var obj2=obj;
+    //var obj2=obj;
     var f=function(status){
         console.log("Task is finished!");
-        obj2.currentProcessFinished=true;
-        obj2.launchNextTaskIfPossible();
+        obj.currentProcessFinished=true;
+        obj.launchNextTaskIfPossible();
         data.onFinish(status);
     };
     return f;
