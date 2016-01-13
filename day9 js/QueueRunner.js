@@ -26,15 +26,15 @@ function formFinFunc(obj,data) {
     var obj2=obj;
     var f=function(status){
         console.log("Task is finished!");
-        data.onFinish(status);
         obj2.currentProcessFinished=true;
         obj2.launchNextTaskIfPossible();
+        data.onFinish(status);
     };
     return f;
 }
 
 QueueRunner.prototype.launchNextTaskIfPossible=function(){
-    if(this.paused) {return; console.log("runner paused");}
+    if(this.paused) {console.log("runner paused");return;}
     if(this.arData.length>0){
         if(this.currentProcessFinished){
             console.log("runner will launch next task");
@@ -102,4 +102,4 @@ qr.push({
 qr.resume();
 
 // do not process pending items, run their onFinish callbacks with "CANCELLED" error
-qr.cleanup();
+//qr.cleanup();
