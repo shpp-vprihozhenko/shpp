@@ -23,16 +23,25 @@
         <input type="submit" value="Go, Karel!" onclick="goKarel">
     </form>
 </div>
+<img src="valli/valli0.jpg" id="valli0" style="display:none">
+<img src="valli/valli1.jpg" id="valli1" style="display:none">
+<img src="valli/valli2.jpg" id="valli2" style="display:none">
+<img src="valli/valli3.jpg" id="valli3" style="display:none">
 </body>
-<script src="from_Alex.js"></script>
-<script src="karelPic.js"></script>
+<script src="from_alex.js"></script>
 <script>
     var stringField=[
         "1x x1x1x1x ",
         ">     9 1  ",
         "1x x2x1x1x "];
-
     map = new Field(stringField);
+
+    var ANIM_DELAY=500;
+
+    var valli0Img=document.getElementById("valli0");
+    var valli1Img=document.getElementById("valli1");
+    var valli2Img=document.getElementById("valli2");
+    var valli3Img=document.getElementById("valli3");
 
     onload=function(){
         b_canvas = document.getElementById("canvas");
@@ -54,17 +63,70 @@
         drawMap();
         var _karelState=map.getKarelPosition();
         karel=new Karel(_karelState.x, _karelState.y, _karelState.direction);
-        drawStartingKarel(karel);
+
+        drawKarel(karel.x,karel.y,karel.direction);
+
+        arMoves=[];
+        var row=1;
+        for(var col=0;col<2;col++) {
+            arMoves.push({oldData:{x:col,y:row,dir:1,beepers:3},newData:{x:col+1,y:row,dir:1,beepers:0}});
+        }
+        arMoves.push({oldData:{x:col,y:row,dir:1,beepers:3},newData:{x:col,y:row,dir:2,beepers:0}});
+        arMoves.push({oldData:{x:col,y:row,dir:2,beepers:3},newData:{x:col,y:row-1,dir:2,beepers:0}});
+        goKarel();
     };
 
-    function goKarel(){
-
+    function drawCell(j, i, beepers) {
+        if(!map.isAvailable(j,i))
+            drawBlockedCell(j,i);
+        else {
+            drawClearCell(j,i);
+            if(beepers==undefined){
+                if(map.checkBeeper(j,i)>0){
+                    drawBeepersInCell(j,i,map.checkBeeper(j,i));
+                }
+            } else {
+                if(beepers>0){
+                    drawBeepersInCell(j,i,beepers);
+                }
+            }
+        }
     }
 
-    function drawStartingKarel(karel) {
-        var col=karel.x, row=karel.y, dir=karel.direction;
+    function latedRefresh(){
+        var latedFunc=function(f){
+            if(arMoves.length==0)
+                return;
+            var data=arMoves.shift();
+            var oldX=data.oldData.x, oldY=data.oldData.y, oldDir=data.oldData.dir, oldBeepers=data.oldData.beepers;
+            var newX=data.newData.x, newY=data.newData.y, newDir=data.newData.dir, newBeepers=data.newData.beepers;
+//            if(oldDir!=newDir){
+//                drawCell(oldX,oldY,oldBeepers);
+//                drawKarel(oldX,oldY,newDir);
+//                data.oldData.dir=newDir;
+//                arMoves.unshift(data);
+//            } else {
+                drawCell(oldX,oldY,oldBeepers);
+                drawCell(newX,newY,newBeepers);
+                drawKarel(newX,newY,newDir);
+//            }
+            setTimeout(f, ANIM_DELAY, f);
+        };
+        return latedFunc;
+    }
+
+    function goKarel(){
+        func=latedRefresh();
+        setTimeout(func, ANIM_DELAY, func);
+    }
+
+    function drawKarel(col,row,dir) {
+        //var col=karel.x, row=karel.y, dir=karel.direction;
         var x=startX+col*cellSizeX, y=startY+row*cellSizeX;
-        drawKarelPic(b_context,x,y);
+        if (dir==1) b_context.drawImage(valli1Img,x,y,cellSizeX,cellSizeY);
+        else if (dir==2) b_context.drawImage(valli2Img,x,y,cellSizeX,cellSizeY);
+        else if (dir==3) b_context.drawImage(valli3Img,x,y,cellSizeX,cellSizeY);
+        else b_context.drawImage(valli0Img,x,y,cellSizeX,cellSizeY);
     }
     function drawBlockedCell(x,y) {
         b_context.fillStyle="black";
@@ -105,14 +167,7 @@
 
         for(var i=0;i<numRows;i++){
             for(var j=0;j<numCols;j++){
-                if(!map.isAvailable(j,i))
-                    drawBlockedCell(j,i);
-                else {
-                    drawClearCell(j,i);
-                    if(map.checkBeeper(j,i)>0){
-                        drawBeepersInCell(j,i,map.checkBeeper(j,i));
-                    }
-                }
+                drawCell(j,i);
             }
         }
     }
