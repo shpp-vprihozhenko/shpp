@@ -20,15 +20,16 @@
     <h1>Enter Karel commands here:</h1>
     <form>
         <textarea id="task" cols="50" rows="30"></textarea>
-        <input type="submit" value="Go, Karel!">
+        <input type="submit" value="Go, Karel!" onclick="goKarel">
     </form>
 </div>
 </body>
-<script src="mapa.js"></script>
+<script src="from_Alex.js"></script>
+<script src="karelPic.js"></script>
 <script>
     var stringField=[
         "1x x1x1x1x ",
-        ">     1 1  ",
+        ">     9 1  ",
         "1x x2x1x1x "];
 
     map = new Field(stringField);
@@ -40,7 +41,7 @@
         numCols=map.getWidth();
         numRows=map.getHeight();
         cellSizeX=(b_canvas.width-15)/numCols;
-        cellSizeY=(b_canvas.height-15)/numRows
+        cellSizeY=(b_canvas.height-15)/numRows;
 
         startX=5;
         startY=5;
@@ -51,35 +52,65 @@
             cellSizeX=cellSizeY;
 
         drawMap();
+        var _karelState=map.getKarelPosition();
+        karel=new Karel(_karelState.x, _karelState.y, _karelState.direction);
+        drawStartingKarel(karel);
     };
+
+    function goKarel(){
+
+    }
+
+    function drawStartingKarel(karel) {
+        var col=karel.x, row=karel.y, dir=karel.direction;
+        var x=startX+col*cellSizeX, y=startY+row*cellSizeX;
+        drawKarelPic(b_context,x,y);
+    }
     function drawBlockedCell(x,y) {
-        b_context.fillStyle="#000000";
+        b_context.fillStyle="black";
         b_context.fillRect(startX+x*cellSizeX, startY+y*cellSizeY, cellSizeX, cellSizeY);
     }
     function drawClearCell(x,y) {
-        b_context.fillStyle="#ffffff";
+        b_context.strokeRect(startX+x*cellSizeX, startY+y*cellSizeY, cellSizeX, cellSizeY);
+        b_context.fillStyle="white";
         b_context.fillRect(startX+x*cellSizeX, startY+y*cellSizeY, cellSizeX, cellSizeY);
     }
     function drawBeepersInCell(x, y, numBeepers) {
-        b_context.fillStyle="#000000";
-        b_context.arc(startX+x*cellSizeX, startY+y*cellSizeY, 20, 0, 2*Math.PI);
-        b_context.fill();
-        b_context.beginPath();
+
+        var beeperRadius=cellSizeX/4;
+
+        function drawCircle(cx,cy) {
+            b_context.fillStyle="black";
+            b_context.arc(cx, cy, beeperRadius+1, 0, 2*Math.PI);
+            b_context.fill();
+            b_context.beginPath();
+            b_context.fillStyle="blue";
+            b_context.arc(cx, cy, beeperRadius-1, 0, 2*Math.PI);
+            b_context.fill();
+            b_context.beginPath();
+        }
+
+        var nb=numBeepers; if(nb>5) nb=5;
+        var K=cellSizeX/beeperRadius;
+        var sX=startX+x*cellSizeX+beeperRadius*2 - (nb*(beeperRadius*2/K)/2), sY=startY+y*cellSizeY+beeperRadius*2;
+        for(var i=0; i<nb;i++){
+            drawCircle(sX+i*beeperRadius*2/K,sY);
+        }
     }
     function drawMap() {
-        b_context.fillStyle="#000000";
+        b_context.fillStyle="black";
         b_context.fillRect(0, 0, numCols*cellSizeX+10, numRows*cellSizeY+10);
-        b_context.fillStyle="#ffffff";
+        b_context.fillStyle="white";
         b_context.fillRect(5, 5, numCols*cellSizeX, numRows*cellSizeY);
 
         for(var i=0;i<numRows;i++){
             for(var j=0;j<numCols;j++){
-                if(!map.isAvailible(j,i))
+                if(!map.isAvailable(j,i))
                     drawBlockedCell(j,i);
                 else {
                     drawClearCell(j,i);
-                    if(map.numBeepers(j,i)>0){
-                        drawBeepersInCell(j,i);
+                    if(map.checkBeeper(j,i)>0){
+                        drawBeepersInCell(j,i,map.checkBeeper(j,i));
                     }
                 }
             }
