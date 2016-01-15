@@ -196,15 +196,6 @@ Karel.prototype.putBeeper = function () {
     } else {
         return;
     }
-    commands.push({
-        oldData: {
-            x: this.x,
-            y: this.y,
-            dir: this.direction,
-            beepers: currBeeperCount
-        },
-        newData: {x: this.x, y: this.y, dir: this.direction, beepers: map.checkBeeper(this.x, this.y)}
-    });
 }
 
 Karel.prototype.pickBeeper = function () {
@@ -220,15 +211,6 @@ Karel.prototype.pickBeeper = function () {
         s = s1 + (currBeeperCount - 1) + s2;
         map.map[y] = s;
     }
-    commands.push({
-        oldData: {
-            x: this.x,
-            y: this.y,
-            dir: this.direction,
-            beepers: currBeeperCount
-        },
-        newData: {x: this.x, y: this.y, dir: this.direction, beepers: map.checkBeeper(this.x, this.y)}
-    });
 }
 
 Karel.prototype.facingNorth = function () {
