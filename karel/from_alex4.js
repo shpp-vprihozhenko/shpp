@@ -250,7 +250,8 @@ Karel.prototype.noFacingEast = function () {
 
 //var commands = [];
 
-function parseTask(lines, arMoves, karel) {
+function parseTask(lines, karel) {
+    var ar=[];
     for (var i = 0; i < lines.length; i++) {
         var oldX = karel.x;
         var oldY = karel.y;
@@ -261,8 +262,9 @@ function parseTask(lines, arMoves, karel) {
         var newY = karel.y;
         var newDir = karel.direction;
         var newBeepers = map.checkBeeper(newX, newY);
-        arMoves.push({oldData:{x:oldX, y:oldY, dir:oldDir, beepers: oldBeepers}, newData:{x:newX, y:newY, dir:newDir, beepers: newBeepers}})
+        ar.push({oldData:{x:oldX, y:oldY, dir:oldDir, beepers: oldBeepers}, newData:{x:newX, y:newY, dir:newDir, beepers: newBeepers}})
     }
+    return ar;
 }
 
 function checkCommands(command) {

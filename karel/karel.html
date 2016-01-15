@@ -118,8 +118,7 @@
 
     function goKarel(){
         var lines = document.getElementById("task").value.split('\n');
-        arMoves=[];
-        parseTask(lines,arMoves,karel);
+        arMoves=parseTask(lines,karel);
         func=latedRefresh();
         setTimeout(func, ANIM_DELAY, func);
     }
