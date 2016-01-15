@@ -28,7 +28,7 @@
 <img src="valli/valli2.jpg" id="valli2" style="display:none">
 <img src="valli/valli3.jpg" id="valli3" style="display:none">
 </body>
-<script src="from_alex3.js"></script>
+<script src="from_alex4.js"></script>
 <script>
     var stringField=[
         "1x x1x1x1x ",
@@ -66,13 +66,6 @@
 
         drawKarel(karel.x,karel.y,karel.direction);
 
-//        var row=1;
-//        for(var col=0;col<2;col++) {
-//            arMoves.push({oldData:{x:col,y:row,dir:1,beepers:3},newData:{x:col+1,y:row,dir:1,beepers:0}});
-//        }
-//        arMoves.push({oldData:{x:col,y:row,dir:1,beepers:3},newData:{x:col,y:row,dir:2,beepers:0}});
-//        arMoves.push({oldData:{x:col,y:row,dir:2,beepers:3},newData:{x:col,y:row-1,dir:2,beepers:0}});
-//        goKarel();
     };
 
     function drawCell(j, i, beepers) {
@@ -120,6 +113,11 @@
         parseTask(lines,arMoves,karel);
         func=latedRefresh();
         setTimeout(func, ANIM_DELAY, func);
+        setTimeout(function(){
+            console.log("djdjj")
+        }, 1000);
+        setTimeout('alert("прошла секунда")', 3000)
+
         return false;
     }
 
