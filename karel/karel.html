@@ -10,6 +10,17 @@
         .dialog{
             float: right;
         }
+        .btn{
+            /*width: 10em;*/
+            /*height: 3em;*/
+            background-color: aqua;
+            padding: 1em;
+            text-align: center;
+            font-size: 140%;
+        }
+        .btn:hover{
+            background-color: blue;
+        }
     </style>
 </head>
 <body>
@@ -18,10 +29,10 @@
 </div>
 <div class="dialog">
     <h1>Enter Karel commands here:</h1>
-    <form action="" onsubmit="goKarel()">
-        <textarea id="task" cols="50" rows="30"></textarea>
-        <input type="submit" value="Go, Karel!" onclick="goKarel">
-    </form>
+    <div>
+        <textarea id="task" cols="50" rows="10"></textarea>
+        <div class="btn" onclick="goKarel();">Go, Karel!</div>
+    </div>
 </div>
 <img src="valli/valli0.jpg" id="valli0" style="display:none">
 <img src="valli/valli1.jpg" id="valli1" style="display:none">
@@ -113,12 +124,6 @@
         parseTask(lines,arMoves,karel);
         func=latedRefresh();
         setTimeout(func, ANIM_DELAY, func);
-        setTimeout(function(){
-            console.log("djdjj")
-        }, 1000);
-        setTimeout('alert("прошла секунда")', 3000)
-
-        return false;
     }
 
     function drawKarel(col,row,dir) {
