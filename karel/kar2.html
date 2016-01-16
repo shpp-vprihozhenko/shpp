@@ -24,7 +24,7 @@
 <body>
 <div class="field">
     <!--<canvas id="canvas2" width="500" height="500"></canvas>-->
-    <div id="canv1" class="canvClass"></div>
+    <div id="placeForCanvas" class="canvClass"></div>
 </div>
 <div class="dialog">
     <h1>Enter Karel commands here:</h1>
@@ -33,14 +33,19 @@
         <div class="btn" onclick="goKarel();">Go, Karel!</div>
     </div>
 </div>
-<img src="valli/valli0.jpg" id="valli0" style="display:none">
-<img src="valli/valli1.jpg" id="valli1" style="display:none">
-<img src="valli/valli2.jpg" id="valli2" style="display:none">
-<img src="valli/valli3.jpg" id="valli3" style="display:none">
+<!--<img src="valli/valli0.jpg" id="valli0" style="display:none">-->
+<!--<img src="valli/valli1.jpg" id="valli1" style="display:none">-->
+<!--<img src="valli/valli2.jpg" id="valli2" style="display:none">-->
+<!--<img src="valli/valli3.jpg" id="valli3" style="display:none">-->
 </body>
 <script src="player2d.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script src="jquery-2.2.0.js"></script>
 <script>
+
+//    var valli0Img=document.getElementById("valli0");
+//    var valli1Img=document.getElementById("valli1");
+//    var valli2Img=document.getElementById("valli2");
+//    var valli3Img=document.getElementById("valli3");
 
     var stringField=[
         "1x x1x1x1x ",
@@ -62,17 +67,20 @@
     }
     parseStringToMap(stringField,currentMap);
 
-    function goKarel(){
-        var elem=$("#canv1");
-        var player=new Karel2dPlayer(elem, currentMap);
-        player.drawMap();
+    onload= function () {
+        var elem=$("#placeForCanvas");
+        player=new Karel2dPlayer(elem, currentMap);
+        player.drawMapAndKarel();
+    };
 
+    function goKarel(){
         var incomingCommands = {
             commands: [
                 {command: 'move'},
                 {command: 'pickup'},
                 {command: 'move'},
                 {command: 'put'},
+                {command: 'move'},
                 {command: 'move'},
                 {command: 'rotate',
                     data: {
@@ -82,7 +90,7 @@
                 {command: 'move'}
             ]
         };
-        //player.play(incomingCommands);
+        player.play(incomingCommands);
     }
 </script>
 </html>
