@@ -23,8 +23,8 @@
 </head>
 <body>
 <div class="field">
-    <!--<canvas id="canvas" width="500" height="500"></canvas>-->
-    <div class="canvClass"></div>
+    <!--<canvas id="canvas2" width="500" height="500"></canvas>-->
+    <div id="canv1" class="canvClass"></div>
 </div>
 <div class="dialog">
     <h1>Enter Karel commands here:</h1>
@@ -63,7 +63,7 @@
     parseStringToMap(stringField,currentMap);
 
     function goKarel(){
-        var elem=$(".canvClass");
+        var elem=$("#canv1");
         var player=new Karel2dPlayer(elem, currentMap);
         player.drawMap();
 

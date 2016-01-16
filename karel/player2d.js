@@ -22,9 +22,8 @@ Karel2dPlayer.prototype.init = function () {
     this.element.html(this.template());
 };
 Karel2dPlayer.prototype.template = function () {
-    return "" +
-        "<cavnas class='karel-2d-player' width='600' height='600' id='canvID'></canvas>" +
-        "<textarea class='karel-commands-input'></textarea>";
+    return "" +"<cavnas class='karel-2d-player' width='600' height='600' id='canvID'>";
+        //"<textarea class='karel-commands-input'></textarea>";
 };
 Karel2dPlayer.prototype.takeKarelFromMap=function(myKarel) {
     for(var y=0; y<this.map.data.map.length;y++)
