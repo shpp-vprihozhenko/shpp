@@ -22,7 +22,7 @@ Karel2dPlayer.prototype.init = function () {
     this.element.html(this.template());
 };
 Karel2dPlayer.prototype.template = function () {
-    return "" +"<cavnas class='karel-2d-player' width='600' height='600' id='canvID'>";
+    return "" +"<canvas class='karel-2d-player' width='600' height='600' id='canvID'>";
         //"<textarea class='karel-commands-input'></textarea>";
 };
 Karel2dPlayer.prototype.takeKarelFromMap=function(myKarel) {
