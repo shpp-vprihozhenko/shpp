@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Karel working page</title>
+    <style>
+        .field{
+            float: left;
+        }
+        .dialog{
+            float: right;
+        }
+        .btn{
+            background-color: aqua;
+            padding: 1em;
+            text-align: center;
+            font-size: 140%;
+        }
+        .btn:hover{
+            background-color: blue;
+        }
+    </style>
+</head>
+<body>
+<div class="field">
+    <!--<canvas id="canvas" width="500" height="500"></canvas>-->
+    <div class="canvClass"></div>
+</div>
+<div class="dialog">
+    <h1>Enter Karel commands here:</h1>
+    <div>
+        <textarea id="task" cols="50" rows="10"></textarea>
+        <div class="btn" onclick="goKarel();">Go, Karel!</div>
+    </div>
+</div>
+<img src="valli/valli0.jpg" id="valli0" style="display:none">
+<img src="valli/valli1.jpg" id="valli1" style="display:none">
+<img src="valli/valli2.jpg" id="valli2" style="display:none">
+<img src="valli/valli3.jpg" id="valli3" style="display:none">
+</body>
+<script src="player2d.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+<script>
+
+    var stringField=[
+        "1x x1x1x1x ",
+        ">1    9 1  ",
+        "1x x2x1x1x "];
+    var currentMap=    {
+        name: 'test map',
+        data: {
+            map: []
+            ,finalMap: []
+        }
+    };
+    function parseStringToMap(stringField, currentMap) {
+        for(var i=0; i<stringField.length;i++){
+            var s=stringField[i].split("");
+            currentMap.data.map.push(s);
+            currentMap.data.finalMap.push(s);
+        }
+    }
+    parseStringToMap(stringField,currentMap);
+
+    function goKarel(){
+        var elem=$(".canvClass");
+        var player=new Karel2dPlayer(elem, currentMap);
+        player.drawMap();
+
+        var incomingCommands = {
+            commands: [
+                {command: 'move'},
+                {command: 'pickup'},
+                {command: 'move'},
+                {command: 'put'},
+                {command: 'move'},
+                {command: 'rotate',
+                    data: {
+                        angle: -1
+                    }
+                },
+                {command: 'move'}
+            ]
+        };
+        //player.play(incomingCommands);
+    }
+</script>
+</html>
