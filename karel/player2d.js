@@ -23,7 +23,7 @@ Karel2dPlayer.prototype.init = function () {
 };
 Karel2dPlayer.prototype.template = function () {
     return "" +
-        "<cavnas class='karel-2d-player' width='600' height='600'></canvas>" +
+        "<cavnas class='karel-2d-player' width='600' height='600' id='canvID'></canvas>" +
         "<textarea class='karel-commands-input'></textarea>";
 };
 Karel2dPlayer.prototype.takeKarelFromMap=function(myKarel) {
@@ -147,7 +147,8 @@ Karel2dPlayer.prototype.drawMap = function () {
 
     this.takeKarelFromMap(this.myKarel);
 
-    b_canvas=document.getElementsByClassName("karel-2d-player");
+    //b_canvas=document.getElementsByClassName("karel-2d-player");
+    b_canvas=document.getElementById("canvID");
     b_context = b_canvas.getContext("2d");
 
     numCols=map.getWidth();
