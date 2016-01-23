@@ -14,8 +14,6 @@ var KarelObj=function(){
 function Karel2dPlayer(elem, map) {
     this.element = elem;
     this.map = map;
-    this.init();
-    this.ANIM_DELAY=500;
     this.myKarel=new KarelObj();
     this.takeKarelFromMap(this.myKarel);
     this.graph={};
@@ -29,15 +27,17 @@ Karel2dPlayer.prototype.init = function () {
     this.valli1Img=document.getElementById("valli1");
     this.valli2Img=document.getElementById("valli2");
     this.valli3Img=document.getElementById("valli3");
-    this.timeOutedFunc=function(){console.log(1)};
+    this.graph.windowBorderThick=5;
+    this.ANIM_DELAY=700;
+    this.framesDelimitter=10;
 };
 Karel2dPlayer.prototype.template = function () {
     return "" +"<canvas class='karel-2d-player' width='600' height='600' id='canvID'>"
         +
-        "<img src='valli/valli0.jpg' id='valli0' style='display:none'>"+
-        "<img src='valli/valli1.jpg' id='valli1' style='display:none'>"+
-        "<img src='valli/valli2.jpg' id='valli2' style='display:none'>"+
-        "<img src='valli/valli3.jpg' id='valli3' style='display:none'>"
+        "<img src='img/val0.png' id='valli0' style='display:none'>"+
+        "<img src='img/val1.png' id='valli1' style='display:none'>"+
+        "<img src='img/val2.png' id='valli2' style='display:none'>"+
+        "<img src='img/val3.png' id='valli3' style='display:none'>"
     ;
         //"<textarea class='karel-commands-input'></textarea>";
 };
@@ -86,7 +86,7 @@ Karel2dPlayer.prototype.fillArMovies=function(commands) {
                 var curBeepersNum=0;
             else
                 var curBeepersNum=parseInt(currentMap[oldY][oldX]);
-            currentMap[oldY][oldX]=""+curBeepersNum+1;
+            currentMap[oldY][oldX]=""+(curBeepersNum+1);
         }
 
         var newX=myKarel.x, newY=myKarel.y, newDir=myKarel.dir,
@@ -103,10 +103,12 @@ Karel2dPlayer.prototype.fillArMovies=function(commands) {
 
 Karel2dPlayer.prototype.drawEmptyMap=function () {
     this.graph.b_context.fillStyle="black";
-    this.graph.b_context.fillRect(0, 0, this.graph.numCols*this.graph.cellSizeX+10,
-        this.graph.numRows*this.graph.cellSizeY+10);
+    this.graph.b_context.fillRect(0, 0, this.graph.numCols*this.graph.cellSizeX+
+        this.graph.windowBorderThick*2,
+        this.graph.numRows*this.graph.cellSizeY+this.graph.windowBorderThick*2);
     this.graph.b_context.fillStyle="white";
-    this.graph.b_context.fillRect(5, 5, this.graph.numCols*this.graph.cellSizeX,
+    this.graph.b_context.fillRect(this.graph.windowBorderThick, this.graph.windowBorderThick,
+        this.graph.numCols*this.graph.cellSizeX,
         this.graph.numRows*this.graph.cellSizeY);
 
     for(var i=0;i<this.graph.numRows;i++){
@@ -122,7 +124,7 @@ Karel2dPlayer.prototype.drawCell=function (x, y, beepers) {
         this.drawClearCell(x,y);
         if(beepers==undefined){
             var bNum=parseInt(this.map.data.map[y][x]);
-            if( ! (bNum==NaN)) {
+            if( ! isNaN(bNum)) {
                 this.drawBeepersInCell(x,y,bNum);
             }
         } else {
@@ -176,17 +178,16 @@ Karel2dPlayer.prototype.drawKarel=function () {
 };
 
 Karel2dPlayer.prototype.drawMapAndKarel = function () {
-    //b_canvas=document.getElementsByClassName("karel-2d-player");
     this.graph.b_canvas=document.getElementById("canvID");
     this.graph.b_context = this.graph.b_canvas.getContext("2d");
 
     this.graph.numCols=this.map.data.map[0].length;
     this.graph.numRows=this.map.data.map.length;
-    this.graph.cellSizeX=(this.graph.b_canvas.width-15)/this.graph.numCols;
-    this.graph.cellSizeY=(this.graph.b_canvas.height-15)/this.graph.numRows;
+    this.graph.cellSizeX=(this.graph.b_canvas.width-this.graph.windowBorderThick*3)/this.graph.numCols;
+    this.graph.cellSizeY=(this.graph.b_canvas.height-this.graph.windowBorderThick*3)/this.graph.numRows;
 
-    this.graph.startX=5;
-    this.graph.startY=5;
+    this.graph.startX=this.graph.windowBorderThick;
+    this.graph.startY=this.graph.windowBorderThick;
 
     if(this.graph.cellSizeY>this.graph.cellSizeX)
         this.graph.cellSizeY=this.graph.cellSizeX;
@@ -205,26 +206,81 @@ Karel2dPlayer.prototype.play = function (incomingCommands) {
     this.arMovies=this.fillArMovies(incomingCommands.commands);
     this.goKarel();
 };
+Karel2dPlayer.prototype.allFinished=function(){
+    this.rotateKarel();
+    //clearInterval(this.showFunc);
+};
 
 function latedRefresh(obj){
+
     var latedFunc=function(func){
-        if(obj.arMovies.length==0)
+
+        function splitDistanceAndAddToArMovies(data, numberOfFrames) {
+            var frameTime=obj.ANIM_DELAY/numberOfFrames;
+
+            var dx=(data.newData.x-data.oldData.x)/numberOfFrames;
+            var dy=(data.newData.y-data.oldData.y)/numberOfFrames;
+
+            function dataCopy(data) {
+                var res=JSON.parse(JSON.stringify(data));
+                res.command=frameTime;
+                res.sourceOldData=data;
+                return res;
+            }
+            if(dy==0){
+                for(var x=data.newData.x; Math.abs(x-data.oldData.x)>Math.abs(dx); x-=dx){
+                    var newData=dataCopy(data);
+                    newData.newData.x=x;
+                    newData.oldData.x=x-dx;
+                    obj.arMovies.unshift(newData);
+                }
+            } else if(dx==0){
+                for(var y=data.newData.y; Math.abs(y-data.oldData.y)>Math.abs(dy); y-=dy){
+                    var newData=dataCopy(data);
+                    newData.newData.y=y;
+                    newData.oldData.y=y-dy;
+                    obj.arMovies.unshift(newData);
+                }
+            }
+        }
+
+        if(obj.arMovies.length==0){
+            obj.allFinished();
             return;
+        }
+
         var data=obj.arMovies.shift();
-        var oldX=data.oldData.x, oldY=data.oldData.y, oldDir=data.oldData.dir, oldBeepers=data.oldData.beepers;
-        var newX=data.newData.x, newY=data.newData.y, newDir=data.newData.dir, newBeepers=data.newData.beepers;
-//            if(oldDir!=newDir){
-//                drawCell(oldX,oldY,oldBeepers);
-//                drawKarel(oldX,oldY,newDir);
-//                data.oldData.dir=newDir;
-//                arMoves.unshift(data);
-//            } else {
-        obj.drawCell(oldX,oldY,oldBeepers);
-        obj.drawCell(newX,newY,newBeepers);
-        obj.myKarel.x=newX; obj.myKarel.y=newY; obj.myKarel.dir=newDir;
+
+        if(data.command=="move"){
+            splitDistanceAndAddToArMovies(data,obj.framesDelimitter);
+            data=obj.arMovies.shift();
+        } else if (data.command=="rotate"){
+            obj.myKarel.x=data.newData.x; obj.myKarel.y=data.newData.y;
+            obj.myKarel.dir=data.oldData.dir;
+            obj.rotateKarel(-90);
+            obj.myKarel.dir=data.newData.dir;
+            return;
+        }
+
+        var framesDelay=obj.ANIM_DELAY;
+        var framesMode=false;
+        if(!isNaN(parseInt(data.command))){
+            framesDelay=~~data.command; // splitted frames
+            framesMode=true;
+        }
+
+        if(framesMode){
+            obj.drawCell(~~data.sourceOldData.oldData.x,~~data.sourceOldData.oldData.y,data.sourceOldData.oldData.beepers);
+            obj.drawCell(~~data.sourceOldData.newData.x,~~data.sourceOldData.newData.y,data.newData.beepers);
+        }
+        else{
+            obj.drawCell(~~data.oldData.x,~~data.oldData.y,data.oldData.beepers);
+            obj.drawCell(~~data.newData.x,~~data.newData.y,data.newData.beepers);
+        }
+        obj.myKarel.x=data.newData.x; obj.myKarel.y=data.newData.y; obj.myKarel.dir=data.newData.dir;
         obj.drawKarel();
-//      }
-        setTimeout(func, obj.ANIM_DELAY, func);
+
+        setTimeout(func, framesDelay, func);
     };
 
     return latedFunc;
@@ -232,5 +288,42 @@ function latedRefresh(obj){
 
 Karel2dPlayer.prototype.goKarel=function (){
     func=latedRefresh(this);
-    setTimeout(func, this.ANIM_DELAY, func);
-}
+    //this.showFunc=setInterval(func, this.ANIM_DELAY);
+    this.showFunc=func;
+    setTimeout(this.showFunc, this.ANIM_DELAY, this.showFunc);
+};
+Karel2dPlayer.prototype.getImgName=function (dir) {
+    if (dir==0) return this.valli0Img;
+    if (dir==1) return this.valli1Img;
+    if (dir==2) return this.valli2Img;
+    if (dir==3) return this.valli3Img;
+};
+Karel2dPlayer.prototype.rotateKarel=function (angle) {
+    var col=this.myKarel.x, row=this.myKarel.y;
+    var x=this.graph.startX+col*this.graph.cellSizeX, y=this.graph.startY+row*this.graph.cellSizeX;
+
+    this.graph.b_context.save();
+    this.graph.b_context.translate(x+this.graph.cellSizeX/2, y+this.graph.cellSizeX/2);
+    this.graph.b_context.fillStyle="white";
+
+    var i= 0, di=2; if(angle<0) di=-di;
+    var obj=this;
+    var imgName=this.getImgName(obj.myKarel.dir);
+
+    var animRot=function (){
+        obj.graph.b_context.fillRect(-obj.graph.cellSizeX/2, -obj.graph.cellSizeX/2, obj.graph.cellSizeX, obj.graph.cellSizeY);
+        i+=di;
+        var k=i*Math.PI/180;
+        obj.graph.b_context.rotate(k);
+        obj.graph.b_context.drawImage(imgName,-(obj.graph.cellSizeX*0.9)/2,-(obj.graph.cellSizeX*0.9)/2,obj.graph.cellSizeX*0.9,obj.graph.cellSizeX*0.9);
+        obj.graph.b_context.rotate(k * -1);
+        if(Math.abs(i)>=Math.abs(angle))
+            obj.stopRotating();
+    };
+    this.rotationFunc=setInterval(animRot,this.ANIM_DELAY/10);
+};
+Karel2dPlayer.prototype.stopRotating=function() {
+    clearInterval(this.rotationFunc);
+    this.graph.b_context.restore();
+    setTimeout(this.showFunc, this.ANIM_DELAY, this.showFunc);
+};

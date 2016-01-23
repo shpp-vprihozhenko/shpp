@@ -32,10 +32,10 @@
         <div class="btn" onclick="goKarel();">Go, Karel!</div>
     </div>
 </div>
-<img src="valli/valli0.jpg" id="valli0" style="display:none">
-<img src="valli/valli1.jpg" id="valli1" style="display:none">
-<img src="valli/valli2.jpg" id="valli2" style="display:none">
-<img src="valli/valli3.jpg" id="valli3" style="display:none">
+<img src="img/valli0.jpg" id="valli0" style="display:none">
+<img src="img/val1.png" id="valli1" style="display:none">
+<img src="img/valli2.jpg" id="valli2" style="display:none">
+<img src="img/valli3.jpg" id="valli3" style="display:none">
 </body>
 <script src="from_alex4.js"></script>
 <script>
@@ -74,7 +74,7 @@
         karel=new Karel(_karelState.x, _karelState.y, _karelState.direction);
 
         drawKarel(karel.x,karel.y,karel.direction);
-
+        rotateKarel(karel);
     };
 
     function drawCell(j, i, beepers) {
@@ -122,6 +122,27 @@
         console.log(arMoves);
         func=latedRefresh();
         setTimeout(func, ANIM_DELAY, func);
+    }
+
+
+
+    function rotateKarel(karel) {
+        var col=karel.x, row=karel.y;
+        var x=startX+col*cellSizeX, y=startY+row*cellSizeX;
+
+        b_context.translate(x+cellSizeX/2, y+cellSizeX/2);
+        b_context.fillStyle="white";
+        var i=0;
+        var animRot=function (){
+            b_context.fillRect(-cellSizeX/2, -cellSizeX/2, cellSizeX, cellSizeY);
+            i+=2;
+            var k=i*Math.PI/180;
+            b_context.rotate(k);
+            b_context.drawImage(valli1Img,-(cellSizeX*0.9)/2,-(cellSizeX*0.9)/2,cellSizeX*0.9,cellSizeX*0.9);
+            b_context.rotate(k * -1);
+        };
+
+        setInterval(animRot,50)
     }
 
     function drawKarel(col,row,dir) {

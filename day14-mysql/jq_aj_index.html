@@ -1,0 +1,185 @@
+<html>
+<head>
+    <title>AJAX Chat with history saving</title>
+    <style>
+        body table td{
+            vertical-align: top;
+        }
+        .showMsgHistory{
+            width: 9em;
+            height: 1.5em;
+            display: inline-block;
+            background-color: blue;
+            padding: 0.3em;
+            color: white;
+            font-family: cursive;
+            font-size: 150%;
+            text-align: center;
+        }
+        .showMsgHistory:hover{
+            background-color: cadetblue;
+            cursor: pointer;
+        }
+        .showPrev10MsgHistory{
+            width: 9em;
+            height: 1.5em;
+            display: inline-block;
+            background-color: blue;
+            padding: 0.3em;
+            color: white;
+            font-family: cursive;
+            font-size: 150%;
+            text-align: center;
+        }
+        .showPrev10MsgHistory:hover{
+            background-color: cadetblue;
+            cursor: pointer;
+        }
+        #hystoryMessages{
+            font-family: monospace;
+            font-size: 140%;
+            padding: 1em;
+            line-height: 150%;
+        }
+    </style>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+
+        var USER_ID=""+Math.random();
+        var flagTypingSent=false;
+        var prev10counter=0;
+
+        function onNewuser() {
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: "/newUser",
+                success: function(data){
+                    addMsg(" .server message. ", "Hello. You are connected to chat. Total users in chat "+data.totalUsers);
+                }
+            });
+        }
+
+        $(document).ready(function(){
+            $('form#send').submit(onSend);
+            onNewuser();
+            longPoll();
+            $('#nickname').focus();
+        });
+
+        function onSend(eventData){
+            eventData.preventDefault();
+            var msgArr = $(this).serializeArray();
+            var message = {
+                nickname : msgArr[0].value,
+                text : msgArr[1].value,
+                userID : USER_ID
+            };
+            $.post('/send', message, function (data){$('#text').val('').focus();}, 'json');
+            addMsg(">",message.text);
+            flagTypingSent=false;
+        }
+
+        function addMsg(from, msg) {
+            if (from == $("#nickname").val()) return;
+            $('<p><b>'+from+':</b> <span>'+msg+'</span></p>').hide().prependTo('#messages').slideDown();
+        }
+
+        function longPoll(data){
+            if (data && data.messages) {
+                if(data.messages[0].totalUsers!=undefined){
+                    addMsg(" .server message. ", "New user added to chat, total users in chat "+data.messages[0].totalUsers);
+                } else {
+                    for (var i = 0; i < data.messages.length; i++) {
+                        var message = data.messages[i];
+                        if(message.text!="")
+                            addMsg(message.nickname,message.text);
+                    }
+                }
+            }
+
+            var msg_data={};
+            msg_data.userNickName = document.getElementById("nickname").value;
+            msg_data.userID=USER_ID;
+
+            $.ajax({
+                data: msg_data,
+                cache: false,
+                type: "GET",
+                url: "/recv",
+                success: function(data){
+                    if(data.totalUsers!=undefined)
+                        addMsg(" server message ", "New user added to chat, total users in chat "+data.totalUsers);
+                    longPoll(data);
+                }
+            });
+        }
+
+        function informServerAboutTyping(){
+            if (flagTypingSent) return;
+            var message = {
+                nickname : $("#nickname").val(),
+                text : " is typing ",
+                userID : USER_ID
+            };
+            $.post('/send', message, function (data){}, 'json');
+            flagTypingSent=true;
+        }
+
+        function showMsgHistory(){
+            prev10counter=0;
+            var message = {
+                text : "last10"
+            };
+            $.post('/sendReqOnHistory', message, function (data){
+                console.log("recived data",data);
+                var text="";
+                for(var i=1;i<=data.length;i++){
+                    text+=data[data.length-i].nick+" - "+data[data.length-i].msg+"<br>";
+                }
+                $("#hystoryMessages").html(text);
+            }, 'json');
+        }
+        function showPrev10MsgHistory(){
+            prev10counter++;
+            var idOffsetFromEnd=prev10counter*10;
+            var message = {
+                text : "idOffset",
+                idOffset: idOffsetFromEnd
+            };
+            $.post('/sendReqOnHistory', message, function (data){
+                console.log("recived data",data);
+                var text="";
+                for(var i=1;i<=data.length;i++){
+                    text+=data[data.length-i].nick+" - "+data[data.length-i].msg+"<br>";
+                }
+                $("#hystoryMessages").html(text);
+            }, 'json');
+        }
+    </script>
+</head>
+<body>
+<h1>AJAX Chat with history saving</h1>
+
+<table cellspacing="2" border="0" cellpadding="5" width=100%>
+    <tr>
+        <td width=50%>
+            <form action="/send" method="post" id="send">
+                <label for="nickname">Nickname:</label> <input name="nickname" size="10" id="nickname" />
+                <label for="text">Message:</label> <input name="text" size="40" id="text" onkeypress="informServerAboutTyping();"/>
+                <input type="submit">
+            </form>
+            <div>Help: to ask server "Who is online?" write "who is online?" and press Enter. Private msg begin from "to:"+nick</div>
+            <div id="messages"></div>
+        </td>
+        <td >
+            <div class="showMsgHistory" onclick="showMsgHistory();">Show last 10 msg</div>
+            <div class="showPrev10MsgHistory" onclick="showPrev10MsgHistory();">Show previous 10</div>
+            <div id="hystoryMessages"></div>
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>
+<!--style="vertical-align: top"-->
