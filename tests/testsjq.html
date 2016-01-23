@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<title>fgfffghjhjh</title>
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        .btn{
+            padding: 1em;
+        }
+        .btn:hover{
+            cursor: pointer;
+        }
+        .highlight{
+            background-color: #00a1cb;
+            width: 10em;
+        }
+    </style>
+</head>
+<body>
+<div class="btn" onclick="addText()">add elem</div>
+Some selectors:<ul></ul>
+<p>This is just a test.</p><p>So is this</p>
+
+<p>Hello</p>
+<p class="selected">Hello Again</p>
+<div><span>And Again</span></div>
+
+</body>
+<script src="js/jquery-2.2.0.js"></script>
+<script>
+    function addText(param){
+        $("<div><p>Hello</p></div>").appendTo("body")
+        $(document.body).css( "background", "black" );
+        $(document.body).css( "color", "white" );
+        $(".btn").toggleClass("highlight");
+    }
+    $(document).ready(function(){
+        var title = $(document).attr("title");
+        $("div").text(title);
+        $("p").next(".selected").css("background", "yellow");
+
+        $("*", document.body).each(function () {
+            var parentTag = $(this).parent().get(0).tagName;
+            $(this).prepend(document.createTextNode(parentTag + " > "));
+        });
+    });
+</script>
+</html>
+

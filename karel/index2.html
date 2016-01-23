@@ -1,0 +1,174 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>hello phaser!</title>
+        <script src="js/phaser.min.js"></script>
+    </head>
+    <body>
+	<div id="phaser"></div>
+
+    <script type="text/javascript">
+
+    window.onload = function() {
+        var spriteCellSize=33;
+        var spriteBeeperSize=17;
+        var scaleFactor=2;
+        var karelOffset=3;
+                                                                                                        //, update: update, render: render
+        var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'phaser', { preload: preload, create: create, update: update});
+
+        function preload() {
+            game.load.spritesheet('presets', 'assets/tilemaps/tiles/tmw_desert_spacing.png',spriteCellSize,spriteCellSize);
+            game.load.image('beeper', 'assets/sprites/aqua_ball.png');
+            game.load.image('karel', 'assets/sprites/robot/val1.png');
+        }
+
+        function createKarelSprite(x,y){
+            var realX=x*spriteCellSize*scaleFactor+karelOffset,realY=y*spriteCellSize*scaleFactor+karelOffset;
+            var spr=game.add.sprite(realX, realY, 'karel');
+            var sc=spriteCellSize*scaleFactor/spr.height;
+            spr.scale.setTo(sc,sc);
+            spr.anchor.setTo(0.5, 0.5);
+            spr.x=spr.x+spr.width/2;
+            spr.y=spr.y+spr.height/2;
+            return spr;
+        }
+        function addEmptyCell(x,y){
+            var realX=x*spriteCellSize*scaleFactor,realY=y*spriteCellSize*scaleFactor;
+            var spr=game.add.sprite(realX, realY, 'presets');
+            spr.frame = 33; // road
+            spr.scale.setTo(scaleFactor,scaleFactor);
+        }
+        function addWallCell(x,y){
+            var realX=x*spriteCellSize*scaleFactor,realY=y*spriteCellSize*scaleFactor;
+            var spr=game.add.sprite(realX, realY, 'presets');
+            spr.frame = 9; // wall
+            spr.scale.setTo(scaleFactor,scaleFactor);
+        }
+        function addBeepersToCell(x,y, num){
+            function putBeeperWithCenterAt(x, y) {
+                var beeperScaleFactor=scaleFactor*0.75;
+                if(num>1&&num<3)beeperScaleFactor=beeperScaleFactor*0.7;
+                if(num>=3)beeperScaleFactor=beeperScaleFactor*0.5;
+                var bSize=spriteBeeperSize*beeperScaleFactor;
+                var realX=x-bSize/2, realY=y-bSize/2;
+                var spr=game.add.sprite(realX, realY, 'beeper');
+                spr.scale.setTo(beeperScaleFactor,beeperScaleFactor);
+
+            }
+            var realX=x*spriteCellSize*scaleFactor,realY=y*spriteCellSize*scaleFactor;
+            var cellSize=spriteCellSize*scaleFactor;
+            var xCenter=realX+cellSize/2;
+            var yCenter=realY+cellSize/2;
+
+            function putBeepersLine(number, lineY) {
+                if(number==2){
+                    putBeeperWithCenterAt(realX+cellSize/4, lineY);
+                    putBeeperWithCenterAt(realX+cellSize*3/4, lineY);
+                } else {
+                    putBeeperWithCenterAt(realX+cellSize/4, lineY);
+                    putBeeperWithCenterAt(xCenter, lineY);
+                    putBeeperWithCenterAt(realX+cellSize*3/4, lineY);
+                }
+            }
+
+            if(num==1) {
+                putBeeperWithCenterAt(xCenter, yCenter);
+            } else if(num==2){
+                putBeepersLine(2,yCenter);
+            } else  if(num==3){
+                putBeeperWithCenterAt(realX+cellSize/4, realY+cellSize/4);
+                putBeeperWithCenterAt(xCenter, yCenter);
+                putBeeperWithCenterAt(realX+cellSize*3/4, realY+cellSize*3/4);
+            } else  if(num==4){
+                putBeepersLine(2,realY+cellSize/4);
+                putBeepersLine(2,realY+cellSize*3/4);
+            } else  if(num==5){
+                putBeepersLine(2,realY+cellSize/4);
+                putBeeperWithCenterAt(xCenter, yCenter);
+                putBeepersLine(2,realY+cellSize*3/4);
+            } else  if(num==6){
+                putBeepersLine(3,realY+cellSize/4);
+                putBeepersLine(3,realY+cellSize*3/4);
+            } else  if(num==7){
+                putBeepersLine(3,realY+cellSize/4);
+                putBeeperWithCenterAt(xCenter, yCenter);
+                putBeepersLine(3,realY+cellSize*3/4);
+            } else  if(num==8){
+                putBeepersLine(3,realY+cellSize/4);
+                putBeepersLine(2,yCenter);
+                putBeepersLine(3,realY+cellSize*3/4);
+            } else {
+                putBeepersLine(3,realY+cellSize/4);
+                putBeepersLine(3,yCenter);
+                putBeepersLine(3,realY+cellSize*3/4);
+            }
+        }
+
+        var stringField=[
+            "1x x1x1x1x ",
+            ">1    9 1  ",
+            "1x x2x1x1x "];
+        var currentMap=    {
+            name: 'test map',
+            data: {
+                map: []
+                ,finalMap: []
+            }
+        };
+        function parseStringToMap(stringField, currentMap) {
+            for(var i=0; i<stringField.length;i++){
+                var s=stringField[i].split("");
+                currentMap.data.map.push(s);
+                currentMap.data.finalMap.push(s);
+            }
+        }
+
+        function create() {
+            parseStringToMap(stringField,currentMap);
+            var map=currentMap.data.map;
+
+            for(var x=0; x<map[0].length; x++){
+                for(var y=0; y<map.length; y++){
+                    if(map[y][x]=="x")
+                        addWallCell(x,y);
+                    else {
+                        addEmptyCell(x,y);
+                    }
+                }
+            }
+            addBeepersToCell(1,1,1);
+            addBeepersToCell(2,1,2);
+            addBeepersToCell(3,1,3);
+            addBeepersToCell(4,1,4);
+            addBeepersToCell(5,1,5);
+            addBeepersToCell(6,1,6);
+            addBeepersToCell(7,1,7);
+            addBeepersToCell(8,1,8);
+            addBeepersToCell(9,1,9);
+
+            var karelSprite=createKarelSprite(0,1);
+//            startKarelMove(karelSprite);
+        }
+
+        function startKarelMove(karelSprite) {
+            bounce=game.add.tween(karelSprite);
+            bounce.to( { x: 300 }, 2000, Phaser.Easing.Linear.InOut);
+            bounce.onComplete.add(function(){
+                bounce.to({angle: -90}, 2000, Phaser.Easing.Linear.InOut, true);
+                bounce.onComplete.add(function(){
+                    bounce.stop();
+                    console.log("stopped");
+                });
+            }, this);
+            bounce.start();
+        }
+        function update(){
+
+        }
+    }
+    </script>
+
+    </body>
+</html>
