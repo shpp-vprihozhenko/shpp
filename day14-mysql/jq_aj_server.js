@@ -1,6 +1,3 @@
-/**
- * Created by Uzer on 09.01.2016.
- */
 var express = require('express');
 var callbacks = [];
 var arLastGotID=[];
@@ -136,6 +133,13 @@ app.post('/sendReqOnHistory', function(req, res) {
 
 app.post('/send', function(req, res) {
 
+    console.log("referer: "+req.headers.referer);
+
+    if(req.headers.referer!="http://"+req.headers.host+"/"){
+        console.log("bad referer request.");
+        return;
+    }
+
     function formAnswer(message) {
         var s="";
         for(var i=0;i<activeUsers.length;i++){
@@ -154,7 +158,7 @@ app.post('/send', function(req, res) {
     function saveMsgToDB(message) {
         if(message.text==" is typing ")
             return;
-        var chatMsg = { nick: message.nickname, msg: message.text };
+        var chatMsg = { nick: message.nickname.substr(0,30), msg: message.text.substr(0,100)};
         con.query('INSERT INTO chatmessages SET ?', chatMsg, function(err,res){
             if(err) console.log(err);
             console.log('Data added to db', res.insertId);
