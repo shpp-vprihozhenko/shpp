@@ -82,7 +82,9 @@
 
         function addMsg(from, msg) {
             if (from == $("#nickname").val()) return;
-            $('<p><b>'+from+':</b> <span>'+msg+'</span></p>').hide().prependTo('#messages').slideDown();
+//            $('<p><b>'+from+':</b> <span>'+msg+'</span></p>').hide().prependTo('#messages').slideDown();
+            $(document.createTextNode(from+": "+msg)).prependTo('#messages').slideDown();
+            $("<br>").prependTo('#messages').slideDown();
         }
 
         function longPoll(data){
@@ -134,10 +136,17 @@
             $.post('/sendReqOnHistory', message, function (data){
                 console.log("recived data",data);
                 var text="";
+//                var myNode = document.getElementById("foo");
+//                while (myNode.firstChild) {
+//                    myNode.removeChild(myNode.firstChild);
+//                }
+                document.getElementById("hystoryMessages").innerHTML = '';
                 for(var i=1;i<=data.length;i++){
-                    text+=data[data.length-i].nick+" - "+data[data.length-i].msg+"<br>";
+                    text=data[data.length-i].nick+" - "+data[data.length-i].msg;
+                    $("#hystoryMessages").append(document.createTextNode(text));
+                    $("#hystoryMessages").append("<br>" );
                 }
-                $("#hystoryMessages").html(text);
+//                $("#hystoryMessages").html(text);
             }, 'json');
         }
         function showPrev10MsgHistory(){
@@ -151,9 +160,12 @@
                 console.log("recived data",data);
                 var text="";
                 for(var i=1;i<=data.length;i++){
-                    text+=data[data.length-i].nick+" - "+data[data.length-i].msg+"<br>";
+                    text=data[data.length-i].nick+" - "+data[data.length-i].msg+"<br>";
+                    $("#hystoryMessages").append(document.createTextNode(text));
+                    $("#hystoryMessages").append("<br>" );
+//                    $("#hystoryMessages").append(document.createTextNode(text));
                 }
-                $("#hystoryMessages").html(text);
+                //$("#hystoryMessages").html(text);
             }, 'json');
         }
     </script>
