@@ -1,0 +1,5 @@
+CREATE TABLE `chat`.`todo_list` (
+  `idtodo_list` INT NOT NULL AUTO_INCREMENT,
+  `_do` VARCHAR(50) NULL,
+  `state` VARCHAR(1) NULL,
+  PRIMARY KEY (`idtodo_list`));
