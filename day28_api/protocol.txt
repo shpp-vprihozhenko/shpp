@@ -1,0 +1,32 @@
+on new stream begin:
+method: PUT
+{
+  "streamID": "15",
+}
+
+on stream stop:
+method: DELETE
+{
+  "streamID": "15",
+}
+
+on allow user request:
+method: POST
+{
+  "streamID": "15",
+  "userID": "u1272"
+}
+
+check user:
+method: GET
+/chkuser?streamID=15&userID=u123456
+
+answer:
+200 - ok,
+{ data: "access allowed" }
+
+400 - no permission
+{ data: "access restricted" }
+
+500 - server error
+{ data: "server error" } 

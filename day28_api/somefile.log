@@ -1,0 +1,27 @@
+{"level":"info","message":"stream is added","timestamp":"2016-02-05T20:03:39.000Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-05T20:09:26.319Z"}
+{"level":"info","message":"stream is removed","timestamp":"2016-02-05T20:10:12.399Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-05T20:19:50.249Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:21:53.910Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-05T20:28:40.241Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:28:48.464Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-05T20:29:22.755Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:29:27.758Z"}
+{"level":"error","message":"No stream ID in request.","timestamp":"2016-02-05T20:30:11.069Z"}
+{"level":"error","message":"request rejected. This ID already used.15","timestamp":"2016-02-05T20:30:23.337Z"}
+{"level":"error","message":"No user ID in request.","timestamp":"2016-02-05T20:30:29.116Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:30:49.725Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-05T20:44:38.578Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:44:43.257Z"}
+{"level":"info","message":"access allowed","timestamp":"2016-02-05T20:47:59.231Z"}
+{"level":"info","message":"access allowed","timestamp":"2016-02-05T20:49:59.183Z"}
+{"level":"info","message":"access restricted","timestamp":"2016-02-05T20:50:48.435Z"}
+{"level":"info","message":"access restricted","timestamp":"2016-02-05T20:51:06.893Z"}
+{"level":"info","message":"access restricted","timestamp":"2016-02-05T20:52:07.450Z"}
+{"level":"info","message":"access allowed","timestamp":"2016-02-05T20:52:18.718Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:53:03.761Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:53:14.073Z"}
+{"level":"error","message":"no such stream registred","timestamp":"2016-02-05T20:53:30.814Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-05T20:53:47.556Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-05T20:56:05.570Z"}
+{"level":"info","message":"stream is removed","timestamp":"2016-02-05T20:56:10.880Z"}
