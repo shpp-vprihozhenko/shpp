@@ -1,6 +1,6 @@
-var arStreams=[];
+var arrStreams=[];
 
-var Port = 6615;
+var port = 6615;
 var express = require('express');
 var app = express();
 
@@ -22,8 +22,8 @@ function sendMsg(res, code, msg) {
 }
 
 function findPosOfStream(streamID) {
-    for(var i=0;i<arStreams.length;i++)
-        if(arStreams[i].id==streamID)
+    for(var i=0;i<arrStreams.length;i++)
+        if(arrStreams[i].id==streamID)
             return i;
     return -1;
 }
@@ -37,7 +37,7 @@ app.put('/chkuser', function(req, res) {
         var newStream={};
         newStream.id=streamID;
         newStream.allowedUsers=[];
-        arStreams.push(newStream);
+        arrStreams.push(newStream);
         sendMsg(res,200,"stream is added")
     }
 
@@ -57,8 +57,8 @@ app.delete('/chkuser', function(req, res) {
             sendError(res,500,"request rejected. No such stream id registred."+streamID)
             return;
         }
-        arStreams[pos].allowedUsers.splice(0,arStreams[pos].allowedUsers.length);
-        arStreams.splice(pos,1);
+        arrStreams[pos].allowedUsers.splice(0,arrStreams[pos].allowedUsers.length);
+        arrStreams.splice(pos,1);
         sendMsg(res,200,"stream is removed")
     }
 
@@ -77,7 +77,7 @@ app.post('/chkuser', function(req, res) {
         if(streamPos<0){
             sendError(res,500,"no such stream registred");
         } else {
-            arStreams[streamPos].allowedUsers.push(newWhiteUserID);
+            arrStreams[streamPos].allowedUsers.push(newWhiteUserID);
             sendMsg(res,200,"user permission added")
         }
     }
@@ -106,7 +106,7 @@ app.get('/chkuser', function(req, res) {
         if(streamPos<0){
             sendError(res,500,"no such stream registred");
         } else {
-            if (findInAllowed(userID,arStreams[streamPos].allowedUsers))
+            if (findInAllowed(userID,arrStreams[streamPos].allowedUsers))
                 sendMsg(res,200,"access allowed");
             else
                 sendMsg(res,400,"access restricted");
@@ -155,4 +155,4 @@ app.get('/chkuser', function(req, res) {
     }
 });
 
-app.listen(Port);//process.env.PORT
+app.listen(port);//process.env.PORT
