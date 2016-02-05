@@ -1,4 +1,5 @@
 Server port: 6615
+Path: /chkuser
 logfile: somefile.log
 
 on new stream begin:
