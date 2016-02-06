@@ -3,3 +3,7 @@
 *idea*
 *.xml
 karel2d_phaser/*.*
+node_modules*
+node_modules/*
+node_modules
+tests

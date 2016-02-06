@@ -1,7 +1,21 @@
+# Server for user permission checking
+RESTful API Using Node.js &amp; Express 4
+
+##Requirements
+* Node and npm
+
+##Installation
+* Clone the repo : git clone  
+https://github.com/shpp-vprihozhenko/shpp/tree/master/day29-restful-api2
+* Install dependencies : npm install  
+* Start the server : node chk_user_server.js
+
+##Required parameters
 Server port: 6615
 Path: /chkuser
 logfile: somefile.log
 
+##Exchange protocol
 on new stream begin:
 method: PUT
 {
