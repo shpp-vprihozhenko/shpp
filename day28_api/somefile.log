@@ -25,3 +25,13 @@
 {"level":"info","message":"user permission added","timestamp":"2016-02-05T20:53:47.556Z"}
 {"level":"info","message":"stream is added","timestamp":"2016-02-05T20:56:05.570Z"}
 {"level":"info","message":"stream is removed","timestamp":"2016-02-05T20:56:10.880Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-06T09:12:20.727Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-06T09:12:55.942Z"}
+{"level":"info","message":"stream is removed","timestamp":"2016-02-06T09:13:50.616Z"}
+{"level":"error","message":"no such stream registred","timestamp":"2016-02-06T09:14:09.528Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-06T09:16:06.877Z"}
+{"level":"error","message":"no such stream registred","timestamp":"2016-02-06T09:32:17.865Z"}
+{"level":"info","message":"stream is added","timestamp":"2016-02-06T09:32:26.990Z"}
+{"level":"info","message":"user permission added","timestamp":"2016-02-06T09:32:47.479Z"}
+{"level":"error","message":"no such stream registred","timestamp":"2016-02-06T09:32:57.786Z"}
+{"level":"info","message":"access allowed","timestamp":"2016-02-06T09:33:04.447Z"}
