@@ -1,0 +1,5 @@
+#!/bin/sh
+NEWNAME=hello
+cp test.js $NEWNAME
+MSG = `echo copied to $NEWNAME`
+echo $MSG | grep -v cop
