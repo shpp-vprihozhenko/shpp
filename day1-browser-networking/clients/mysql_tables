@@ -1,0 +1,45 @@
+
+DROP TABLE IF EXISTS `users`;
+		
+CREATE TABLE `users` (
+  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `email` VARCHAR(20) NULL DEFAULT NULL,
+  `pwd` VARCHAR(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Table 'userDevices'
+-- 
+-- ---
+
+DROP TABLE IF EXISTS `userDevices`;
+		
+CREATE TABLE `userDevices` (
+  `id` INTEGER NULL AUTO_INCREMENT DEFAULT NULL,
+  `used_id` INTEGER NULL DEFAULT NULL,
+  `device_id` INTEGER NULL DEFAULT NULL,
+  `device_state` INTEGER NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+-- ---
+-- Foreign Keys 
+-- ---
+
+
+-- ---
+-- Table Properties
+-- ---
+
+-- ALTER TABLE `users` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ALTER TABLE `userDevices` ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+-- ---
+-- Test Data
+-- ---
+
+-- INSERT INTO `users` (`id`,`email`,`pwd`) VALUES
+-- ('','','');
+-- INSERT INTO `userDevices` (`id`,`used_id`,`device_id`,`device_state`) VALUES
+-- ('','','','');
