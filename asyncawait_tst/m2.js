@@ -35,18 +35,19 @@ request(opt, function (error, response, body) {
 });
 */
 
-var main=async(function(o,d){
-    var result=await(request(o,d));
-    console.log("res1", result);
+var main=async(function(o){
+    var result=await(request(o));
+    console.log("res1", result.body.response);
 
-    var result2=await(request(o,d));
-    console.log("res2", result2);
-    return [result,result2];
+    var result2=await(request(o));
+    console.log("res2", result2.body.response);
+    return [result.body.response,result2.body.response];
 });
 
-main(opt,data)
-    .then(function (res) {
-    console.log(res);
-}).catch(function(err){
-        console.log("Error", err);
-    });
+main(opt)
+.then(function (res) {
+    console.log("Total res",res);
+})
+.catch(function(err){
+    console.log("Error", err);
+});
